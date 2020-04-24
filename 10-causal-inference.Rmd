@@ -424,6 +424,16 @@ ggdag_adjustment_set(simple_dag_with_coords, shadow = TRUE) +
 
 R will find minimally sufficient adjustment sets, which includes the fewest number of adjustments needed to close all backdoors between `x` and `y`. In this example DAG there was only one set of variables (`a` and `b`), but in other situations there could be many possible sets, or none if the causal effect is not identifiable.
 
+> **Exercise 10A.** In Chapter 6, you used multiple regression to estimate the determinants of inequality in Latin America and the Caribbean (@HuberNielsenPribble:2006). For this exercise, you will draw a DAG that models the causal effect of *ethnic diversity* on *social inequality*. Do the following:
+> 
+> 1. List all the variables you used in that chapter (GDP, foreign direct investment, health expenditure, etc.) and anything else that seems relevant to social inequality.
+> 
+> 2. Draw an initial DAG by hand on paper or a whiteboard and carefully consider the causal relationships between all the different nodes.
+> 
+> 3. Draw the DAG with DAGitty. Assign inequality as the outcome and ethnic diversity as the exposure. If any of your nodes are unobserved, assign them to be latent. Determine what nodes need to be adjusted for.
+>
+> 4. Draw the DAG in R with `ggdag()`.
+
 
 ## Making adjustments
 
@@ -721,6 +731,30 @@ Now that we have run several regression models that adjust for confounders in di
 texreg::screenreg(list(model_naive, model_regression, model_matched, model_ipw),
                   custom.model.names = c("Naive", "Regression", "Matching", "IPW"))
 ```
+
+
+> **Exercise 10B**: In Exercise 10A, you drew a DAG that modeled the causal relationship between ethnic diversity and social inequality. In this exercise you will use the adjustment set from that DAG to attempt to estimate the causal effect. Do the following:
+> 
+> 1. Load the `welfare_la` dataset from the book's package:
+>
+>    ```{r eval=FALSE}
+>    library(politiccr_en)
+>    data("welfare_la")
+>    ```
+>
+>    Your outcome variable is the Gini index (`gini_slc`). Your treatment variable is ethnic diversity (`ethnicdicot`), a binary variable that is 1 if between 20–80% of the population is ethnically diverse (and 0 if not).
+> 
+> 2. Use the DAG you made previously to determine the minimum sufficient adjustment set. What nodes need to be adjusted for to ensure the pathway between ethnic diversity and inequality is identified?
+> 
+> 3. Build a naive and incorrect correlation-is-not-causation model to test the baseline relationship between diversity and inequality (i.e. `lm(gini_slc ~ ethnicdicot, data = welfare_la)`). How is diversity associated with inequality? Why is this estimate not causal?
+> 
+> 4. Use multiple regression to close the backdoors. Include the variables from your adjustment set as explanatory variables in a regression model.
+>
+> 5. Use matching to close the backdoors. Use the variables from your adjustment set to match observations' assignment to treatment, then use the matched observations in a regression model.
+>
+> 6. Use inverse probability weighting to close the backdoors. Use the variables from your adjustment set to generate propensity scores for assignment to treatment, then create inverse probability weights and use those weights in a regression model.
+> 
+> 7. How do these adjusted effects compare to the naive model? How confident would you be claiming that these are causal effects? Why? What could you do to improve your causal identification?
 
 
 ## Caveats
