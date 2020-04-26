@@ -389,7 +389,7 @@ We can also find all the paths between `x` and `y` using the `paths()` function 
 paths(simple_dag)
 ```
 
-The first open path is fine—we want a single *d*-connected relationship between treatment and control—but the other two indicate that there is confounding from `a` and `b`. We can see what each of these paths are with the `ggdag_paths()` function from the **ggdag** package:
+The first open path is fine—we want a single *d*-connected relationship between treatment and outcome—but the other two indicate that there is confounding from `a` and `b`. We can see what each of these paths are with the `ggdag_paths()` function from the **ggdag** package:
 
 ```{r plot-dag-paths-fake, eval=FALSE}
 ggdag_paths(simple_dag_with_coords) +
@@ -443,7 +443,7 @@ Throughout this chapter, we have talked about adjusting for confounders to close
 
 Instead of using an actual political science dataset, we will explore different methods of making adjustments using synthetic data that I generated about an international development program designed to reduce the risk of malaria using mosquito nets. The same methods and principles apply to analysis using real data, but it is impossible to know the true preexisting causal effect in real observational data, so there is no way to compare estimates to the truth. Because this data is simulated, however, we know the (hypothetical) truth—using mosquito nets *causes* malaria risk to decrease by 10 points, on average.
 
-Researchers are interested in whether using mosquito nets decreases an individual's risk of contracting malaria. They have collected data from 1,752 households in an unnamed country and have variables related to environmental factors, individual health, and household characteristics. Additionally, this country has a special program that provides free mosquito nets to households that meet specific requirements: to qualify for the program, there must be more than 4 members of the household, and the household's monthly income must be lower than \$700 a month. Households are not automatically enrolled in the program, and many do not use it. The data is not experimental—researchers have no control over who uses mosquito nets, and individual households make their own choices over whether to apply for free nets or buy their own nets, as well as whether they use the nets if they have them.
+Researchers are interested in whether using mosquito nets decreases an individual's risk of contracting malaria. They have collected data from 1,752 households in an unnamed country and have variables related to environmental factors, individual health, and household characteristics. Additionally, this country has a special government program that provides free mosquito nets to households that meet specific requirements: to qualify for the program, there must be more than 4 members of the household, and the household's monthly income must be lower than \$700 a month. Households are not automatically enrolled in the program, and many do not use it. The data is not experimental—researchers have no control over who uses mosquito nets, and individual households make their own choices over whether to apply for free nets or buy their own nets, as well as whether they use the nets if they have them.
 
 ```{r build-mosquito-dag}
 mosquito_dag <- dagify(
@@ -614,7 +614,7 @@ matched
 
 According to the output from `matched`, the 681 treated observations (i.e. those who used mosquito nets) were matched with 439 untreated observations (i.e. people who are similar in income, temperature, and health, but did not use nets). 632 untreated observations were not matched and will be discarded. Had we used `replace = FALSE`, there would have been an equal number of treated and untreated observations; there are fewer untreated observations here because some are doubled or tripled up.
 
-We can create a new data frame based on this matching with the `match.data()` function. Notice how there are now only 1,120 rows instead of 1.752, since we discarded the unmatched observations. Also notice that there is a new column named `weights`. The `matchit()` function assigns matched pairs of observations different weights depending on how close or distant the matches are in an attempt to control for variation in distance. We can use these weights in our regression model to improve our estimation of the causal effect.
+We can create a new data frame based on this matching with the `match.data()` function. Notice how there are now only 1,120 rows instead of 1,752, since we discarded the unmatched observations. Also notice that there is a new column named `weights`. The `matchit()` function assigns matched pairs of observations different weights depending on how close or distant the matches are in an attempt to control for variation in distance. We can use these weights in our regression model to improve our estimation of the causal effect.
 
 ```{r}
 mosquito_nets_matched <- match.data(matched)
@@ -742,7 +742,7 @@ texreg::screenreg(list(model_naive, model_regression, model_matched, model_ipw),
 >    data("welfare_la")
 >    ```
 >
->    Your outcome variable is the Gini index (`gini_slc`). Your treatment variable is ethnic diversity (`ethnicdicot`), a binary variable that is 1 if between 20–80% of the population is ethnically diverse (and 0 if not).
+>    Your outcome variable is the Gini index (`gini_slc`). Your treatment variable is ethnic diversity (`ethnicdicot`), a binary variable that is 1 if between 20–80% of the population is ethnically diverse, and 0 if not.
 > 
 > 2. Use the DAG you made previously to determine the minimum sufficient adjustment set. What nodes need to be adjusted for to ensure the pathway between ethnic diversity and inequality is identified?
 > 
